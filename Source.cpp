@@ -20,7 +20,7 @@ vector<string> vKeywords = {
 };
 
 const int KEYWORDS_SIZE = vKeywords.size(); //90
-const int SIZE_HASHMAP = vKeywords.size() * 1.42; // 30% free 70% not free
+const int SIZE_HASHMAP = vKeywords.size() * 1.41; // 30% free 70% not free
 
 
 int main()
@@ -74,7 +74,7 @@ int main()
 
 
 
-
+// old code
 /*
     //Fill
     vector<string> vectorMap(vKeywords.size());
