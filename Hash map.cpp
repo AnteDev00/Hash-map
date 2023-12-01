@@ -27,8 +27,6 @@ int main()
 {
     unordered_map<int, string> hashMap;
         //hashMap.resize(SIZE_HASHMAP); //if you wanna use vector, then enable this code
-    
-    cout << SIZE_HASHMAP << "\n";
 
     //Fill 
     for (unsigned int i = 0; i < KEYWORDS_SIZE; i++)
@@ -109,5 +107,4 @@ int main()
     return 0;
 
 */
-
 
