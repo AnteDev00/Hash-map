@@ -69,6 +69,8 @@ int main()
     double MlookupPerSec = (static_cast<double>(nanosecInSec) / (duration.count() / KEYWORDS_SIZE) ) / 1'000'000;
     cout << "\nThat is " << MlookupPerSec << " Milion lookup/s \n";
     cout << "\nCollisions: " << collisions << "  \n";
+
+    cin.get();
 }
 
 
