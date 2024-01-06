@@ -1,3 +1,3 @@
-# Projekt ispitivanja Hash mapa sa riješavanjem problema sudara (collisions)
+#Projekt Hash Mape s Rješavanjem Kolizija
 
-Projekt istražuje izrazito korisne hash mape za riješavanje problema brzog pristupa elementima u velikom nizu, kroz kreiranje custom List klase (Linked list) .
+Ovaj projekt proučava praktičnu primjenu hash mapa u rješavanju problema brzog pristupa elementima unutar velikog niza. Koristi se prilagođena klasa List (Linked list) kako bi se učinkovito rješavali sukobi (collisions).
