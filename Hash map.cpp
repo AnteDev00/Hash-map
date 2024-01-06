@@ -1,9 +1,8 @@
 #include <iostream>
 #include <vector>
-#include <unordered_map>
 #include <chrono>
 
-#include "List.h"
+#include "List.h" // Custom linked list class for dealing with collisions
 
 using namespace std;
 
