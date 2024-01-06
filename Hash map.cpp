@@ -1,110 +1,125 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <unordered_map>
-#include <map>
 #include <chrono>
+
+#include "List.h"
 
 using namespace std;
 
-vector<string> vKeywords = {
-    "alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break", 
+vector<string> keywords = {
+    "alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break",
     "case", "catch", "char", "char8_t", "char16_t", "char32_t", "class", "compl", "concept", "const",
     "consteval", "constexpr", "const_cast", "continue", "co_await", "co_return", "co_yield", "decltype", "default", "delete",
     "do", "double", "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false", "float",
     "for", "friend", "goto", "if", "inline", "int", "long", "mutable", "namespace", "new",
-    "noexcept", "not", "not_eq", "nullptr", "operator", "or", "or_eq", "private", "protected", "public", 
+    "noexcept", "not", "not_eq", "nullptr", "operator", "or", "or_eq", "private", "protected", "public",
     "register", "reinterpret_cast", "requires", "return", "short", "signed", "sizeof", "static", "static_assert", "static_cast",
-    "struct", "switch", "synchronized", "template", "this", "thread_local", "throw", "true", "try", "typedef", 
+    "struct", "switch", "synchronized", "template", "this", "thread_local", "throw", "true", "try", "typedef",
     "typeid", "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while"
 };
 
-const int KEYWORDS_SIZE = vKeywords.size(); //90
-const int SIZE_HASHMAP = vKeywords.size() * 1.41; // 30% free 70% not free
+const int DATASIZE = keywords.size(); // 90 elem
+const int MAPSIZE = keywords.size() * 1.45; //LOAD Factor ~ 70%
 
 
-int main()
+int Hash(string keyword)
 {
-    unordered_map<int, string> hashMap;
-        //hashMap.resize(SIZE_HASHMAP); //if you wanna use vector, then enable this code
+    return hash<string>{}(keyword) % MAPSIZE;
+}
 
-    //Fill 
-    for (unsigned int i = 0; i < KEYWORDS_SIZE; i++)
+string FindKeyword(vector<List<string>*>& hashMap, int hashIndex, int listIndex)
+{
+    return hashMap[hashIndex]->nodeAt(listIndex);
+}
+
+int main() {
+    vector<List<string>*> hashMap(MAPSIZE);
+
+    // FILL
+    for (int i = 0; i < DATASIZE; i++)
     {
-        unsigned int hashindex = hash<string>{}(vKeywords[i]) % SIZE_HASHMAP;
-        hashMap[hashindex] = vKeywords[i];
-            cout << vKeywords[i] << " - hashindex: " << hashindex << endl;
+        // Calc the hash
+        int hashIndex = Hash(keywords[i]);
+
+        // If it's first elem
+        if (hashMap[hashIndex] == nullptr)
+        {
+            List<string>* tempList = new List<string>();
+            hashMap[hashIndex] = tempList;
+            hashMap[hashIndex]->addBack(keywords[i]);
+        }
+        else // if it's not first elem
+        {
+            hashMap[hashIndex]->addBack(keywords[i]);
+        }
+        // cout << keywords[i] << " - hashindex: " << hashIndex << endl;
     }
-    
+
+
     //Lookup & Measuring
     auto start = chrono::high_resolution_clock::now();
-    for (unsigned int i = 0; i < KEYWORDS_SIZE; i++)
+    for ( int i = 0; i < DATASIZE; i++)
     {
-        unsigned int hashIndex = hash<string>{}(vKeywords[i]) % SIZE_HASHMAP;
+        // Calc the hash
+        int hashIndex = hash<string>{}(keywords[i]) % MAPSIZE;
+
+        // Find the INDEX of elem
+        int listIndex = hashMap[hashIndex]->findIndex(keywords[i]);
+
+        // Access the elem
+        string keyword = hashMap[hashIndex]->nodeAt(listIndex);
+       
+        //cout << "\nElement index: " << listIndex << " for " << keywords[i] << " in a linked list, at index:" << hashIndex;
     }
     auto end = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
     
-    //Collision check
-    unsigned int collisions = 0;
-    for (unsigned int i = 0; i < KEYWORDS_SIZE - 1; i++)
+
+    // How many collisions happened and SOLVED
+    int collisions = 0;
+    for (int i = 0; i < DATASIZE; i++)
     {
-        unsigned int first_index= hash<string>{}(vKeywords[i]) % SIZE_HASHMAP;
-        for (unsigned int j = i + 1; j < KEYWORDS_SIZE; j++)
-        {
-            unsigned int second_index = hash<string>{}(vKeywords[j]) % SIZE_HASHMAP;
-            if ((hash<string>{}(vKeywords[i]) % SIZE_HASHMAP) == (hash<string>{}(vKeywords[j])) % SIZE_HASHMAP)
-            {
-                cout << "Collision between index: " << first_index << "and " << second_index << endl;
-                collisions++;
-            }
-        }
+        if(hashMap[i] != nullptr)
+        collisions = collisions + hashMap[i]->getSize()-1;
     }
-    
-    //Log
-    cout << "\n\nAverage Lookup Time: " << duration.count() / KEYWORDS_SIZE << " nanoseconds" << endl; // output elapsed time in microseconds
+
+
+    // Loggin the data about speed and collisions
+    cout << "\n\nAverage Lookup Time [ACCESS OPERATION]: " << duration.count() / DATASIZE << " nanoseconds" << endl; // output elapsed time in microseconds
     unsigned int nanosecInSec = 1'000'000'000;
-    double MlookupPerSec = (static_cast<double>(nanosecInSec) / (duration.count() / KEYWORDS_SIZE) ) / 1'000'000;
+    double MlookupPerSec = (static_cast<double>(nanosecInSec) / (duration.count() / DATASIZE)) / 1'000'000;
     cout << "\nThat is " << MlookupPerSec << " Milion lookup/s \n";
-    cout << "\nCollisions: " << collisions << "  \n";
 
-    cin.get();
-}
+    cout << "\nCollisions: " << collisions << "\n";
 
 
+    cout << "\n\n------------------------------------------------------------\n";
 
 
-// old code
-/*
-    //Fill
-    vector<string> vectorMap(vKeywords.size());
-    for (int i = 0; i < vKeywords.size(); i++)
-    {
-        vectorMap[i] = vKeywords[i];
-    }
-    
-    //Lookup 
+    // HOW MUCH TIME TO DELETE ?
     start = chrono::high_resolution_clock::now();
-    int index2;
-    string keyword2;
-    for (int i = 0; i < SIZE_KEYWORDS; i++)
-    {
-        for (int j = 0; j < vectorMap.size(); j++)
+    for (int i = 0; i < DATASIZE; i++)
+        if (hashMap[i] != nullptr)
         {
-            if (vKeywords[i] == vectorMap[j]) index2 = j;
+            int listSize = hashMap[i]->getSize();
+            for(int j = 0; j < listSize; j++)
+                hashMap[i]->deleteBack();
         }
-        vectorMap[index2] = "";
-    }
     end = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
 
-    //Log
-    cout << "\n\nLookup time: " << duration.count() / vKeywords.size() << " nanoseconds" << endl; // output elapsed time in microseconds
-    nanosecInSec = 1'000'000'000;
-    lookupPerSec = nanosecInSec / (duration.count() / vKeywords.size());
-    cout << "\n That is " << lookupPerSec << " lookup/s \n";
+    // Loggin the data about speed
+    cout << "\n\nAverage Lookup Time [DELETE OPRERATION]: " << duration.count() / DATASIZE << " nanoseconds" << endl; // output elapsed time in microseconds
+    MlookupPerSec = (static_cast<double>(nanosecInSec) / (duration.count() / DATASIZE)) / 1'000'000;
+    cout << "\nThat is " << MlookupPerSec << " Milion lookup/s \n";
 
-    return 0;
+    cout << "\n\n------------------------------------------------------------\n";
 
-*/
 
+    // CleanUp 
+    for (int i = 0; i < DATASIZE; i++)
+    {
+        delete hashMap[i];
+    }
+}
