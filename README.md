@@ -8,3 +8,4 @@ This project explores the practical application of hash maps in solving the chal
 ## Custom Linked list
 ![image](https://github.com/AnteDev00/Hash-map/assets/151842550/63344f3e-9361-48aa-9df4-480d4a673142)
 
+### To find out more about the code, check the included files.
