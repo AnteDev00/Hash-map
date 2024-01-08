@@ -96,7 +96,7 @@ int main() {
     cout << "\n\n------------------------------------------------------------\n";
 
 
-    // HOW MUCH TIME TO DELETE ?
+    // How much time to delete
     start = chrono::high_resolution_clock::now();
     for (int i = 0; i < DATASIZE; i++)
         if (hashMap[i] != nullptr)
