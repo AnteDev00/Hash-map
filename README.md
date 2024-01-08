@@ -2,7 +2,7 @@
 
 This project explores the practical application of hash maps in solving the challenge of quick access to elements within a large array. It employs a customized List class (linked list) to efficiently address collisions.
 
-## Snippets of the code (Source.cpp)
+## Snippets of the code (Hash Map.cpp)
 ![image](https://github.com/AnteDev00/Hash-map/assets/151842550/253be64b-2fed-47eb-99d4-40a31c0c922b)
 
 ## Custom Linked list (List.h)
